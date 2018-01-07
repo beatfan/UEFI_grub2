@@ -6,6 +6,14 @@
 
 1. grub-2.02-for-windows/make-your-own-EFI.bat 为自制efi版grub2的脚本，其配置文件为x86_64-efi.cfg (会根据这个配置文件来生成efi文件,这个配置文件定义了生成的efi文件将要到哪个目录去搜寻grub的配置文件)
 
+文件示例:
+
+```
+search.file /EFI/grub/x64.cfg root  
+set prefix=($root)/EFI/grub  
+configfile ($root)/EFI/grub/x64.cfg  
+```
+
 ![001][1]
 
 2. 运行make-your-own-EFI.bat即可生成z_bootx64.efi，将其改名为bootx64.efi，放到esp分区/EFI/boot/bootx64.efi，
@@ -22,6 +30,9 @@ grub-mkimage.exe -d x86_64-efi -c x86_64-efi.cfg -p /EFI/grub -o z_bootx64.efi -
 
 
 3. 复制locale (地区语言) 和x86_64-efi (模块目录)以及unicode.pf2(字体) background.jpg (背景图片)到/EFI/boot/
+
+4. 这样定制的efi文件就完成了 但是这时还差一个grub的配置文件(也就是你的x86_64-efi.cfg 文件中定义efi去搜寻的(grub2)配置文件,
+5. x64.cfg 
 
 # 直接使用Demo
 
