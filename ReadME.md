@@ -32,7 +32,7 @@ grub-mkimage.exe -d x86_64-efi -c x86_64-efi.cfg -p /EFI/grub -o z_bootx64.efi -
 3. 复制locale (地区语言) 和x86_64-efi (模块目录)以及unicode.pf2(字体) background.jpg (背景图片)到/EFI/boot/
 
 4. 这样定制的efi文件就完成了 但是这时还差一个grub的配置文件(也就是你的x86_64-efi.cfg 文件中定义efi去搜寻的(grub2)配置文件,默认的是x64.cfg 文件
-5. x64.cfg 
+5.  接下来是定制你自己的grub2文件(x64.cfg )
 
 # 直接使用Demo
 
