@@ -34,6 +34,22 @@ grub-mkimage.exe -d x86_64-efi -c x86_64-efi.cfg -p /EFI/grub -o z_bootx64.efi -
 4. 这样定制的efi文件就完成了 但是这时还差一个grub的配置文件(也就是你的x86_64-efi.cfg 文件中定义efi去搜寻的(grub2)配置文件,默认的是x64.cfg 文件
 5.  接下来是定制你自己的grub2文件(x64.cfg ),你可以参考Demo中的文件来定义
 
+## 整个EFI引导目录如下：
+
+FAT/FAT32
+
+#########################
+/EFI/Boot/bootx64.efi
+/EFI/grub/x64.cfg
+
+/EFI/grub/unicode.pf2
+
+/EFI/grub/x86_64-efi/
+
+/EFI/grub/locale/
+
+#####################
+
 # 直接使用Demo
 
 1. EFI文件夹为Demo文件夹，可以直接将其拷贝到ESP分区（第一个FAT/FAT32分区）根目录，即可启动EFI版grub2，/EFI/grub/x64.cfg为其配置文件，内部包含启动efi，启动windows，启动linux以及安装Ubuntu范例，可自行修改菜单
