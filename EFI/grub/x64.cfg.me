@@ -96,10 +96,12 @@ fi
 menuentry "install cn_windows_10_multi-edition_version_1709_updated_sept_2017_x64_dvd_100090804.iso from fisk" --class windows --class os {
 	insmod ntfs
 	set root='(hd0,gpt5)'
+
+
 	clear
 	echo "Start install Windows10"
 	chainloader /bootmgr.efi
-
+}
 
 ###################################  Mac OS ####################################
 menuentry "Init EFI clover to install macos" --class macos --class os{
