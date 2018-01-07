@@ -1,0 +1,588 @@
+# Config for GNU GRand Unified Bootloader (GRUB) (2)
+# /boot/grub/grub.cfg
+# or
+# /boot/grub2/grub.cfg
+
+
+# This grub.cfg file was created by Lance http://www.pendrivelinux.com
+# Suggested Entries and the suggestor, if available, will also be noted.
+# and then improved by Pysis.
+
+# Improvement Sources:
+#   https://www.pendrivelinux.com/boot-multiple-iso-from-usb-via-grub2-using-linux/
+#  Used GRUB2 with command `grub2-install` instead, along with the `--boot-directory` parameter.
+#   If you get an error about failing 'to get a canonical path', or folders not existing on the device, then again, you need to run the command as a privileged user.
+#       If you get errors concerning a bad superblock, and unable to install grub, try rewriting the filesystem again.
+#   https://gist.github.com/jamiekurtz/26c46b3e594f8cdd453a
+#   https://gist.github.com/noisufnoc/e0053d738f5fbb679535
+#   https://gist.github.com/samdoran/90056b8e4a2aedc6a3e8
+#   https://gist.github.com/yeahunter/9eca12b3db064e5dc23b
+#   https://gist.github.com/jeekl/5564476
+#   https://wiki.archlinux.org/index.php/Multiboot_USB_drive
+#     and this one.  How did I forget about these!!!!
+#   https://help.ubuntu.com/community/Grub2/ISOBoot/Examples
+#     Seems to be a gold mine for my purposes!!
+#   http://www.coreboot.org/GRUB2
+#   http://www.backtrack-linux.org/forums/showthread.php?t=42722
+#   http://www.linuxdevcenter.com/pub/a/linux/excerpts/9780596100797/kernel-boot-command-line-parameter-reference.html
+#   https://wiki.archlinux.org/index.php/Grub2
+
+# Notes:
+#  - For variables, be sure to use double-quotes to have them actually resolve in the string.
+#  - Need to re-declare variables inside sub-menus because they open a new "context"..... great..
+#      Source: https://bugs.launchpad.net/ubuntu/+source/grub2/+bug/1175127
+
+# Linting:
+#  - Make sure every 'submenu' command contains 3 periods at the end, connected to the main content string's last charcter
+
+# TODO:
+#  - Separate different types of booting options into more grub config files, if possible.  Look into it.
+
+# Great GRUB2 Reference: http://www.dedoimedo.com/computers/grub-2.html
+
+# Timeout for menu
+set timeout=20
+
+# Default boot entry
+set default=0
+
+set isoPath="/ISOs"
+set linuxPath="$isoPath/Linux"
+set toolPath="$isoPath/Tools"
+set memdiskPath="/boot/memdisk"
+set grub4dosPath="/boot/grub.exe"
+
+# Menu Colours
+set menu_color_normal=white/black
+set menu_color_highlight=white/cyan
+
+submenu "Local OS installations..." {
+
+  submenu "Elementary OS..." {
+
+    menuentry "Elementary OS on Disk" {
+      set root=(hd0,msdos6)
+      linux /boot/vmlinuz-3.2.0-88-generic root=/dev/sda6
+      initrd /boot/initrd.img-3.2.0-88-generic
+      boot
+    }
+
+    menuentry "Elementary OS on Disk; RO, Quiet, Splash" {
+      set root=(hd0,msdos6)
+      linux /boot/vmlinuz-3.2.0-88-generic root=/dev/sda6 ro quiet splash
+      initrd /boot/initrd.img-3.2.0-88-generic
+      boot
+    }
+
+    menuentry "Elementary OS on Disk; RO, Recovery, NoModeSet" {
+      set root=(hd0,msdos6)
+      linux /boot/vmlinuz-3.2.0-88-generic root=/dev/sda6 ro recovery nomodeset 
+      initrd /boot/initrd.img-3.2.0-88-generic
+      boot
+    }
+    
+  }
+
+}
+
+submenu "Linux-based OS Live/Install Images..." {
+
+  set isoPath="/ISOs"
+  set linuxPath="$isoPath/Linux"
+
+  ## Ubuntu-based distros
+  
+  menuentry "Elementary OS 20130810 x64" {
+    set isofile="$linuxPath/elementaryos-stable-amd64.20130810.iso"
+    loopback loop $isofile
+    linux  (loop)/casper/vmlinuz boot=casper iso-scan/filename=$isofile quiet splash --
+    initrd  (loop)/casper/initrd.lz
+  }
+  menuentry "Linux Mint 17.2 x64" {
+    set isofile="$linuxPath/linuxmint-17.2-mate-64bit.iso"
+    loopback loop $isofile
+    linux (loop)/casper/vmlinuz file=/cdrom/preseed/mint.seed boot=casper initrd=/casper/initrd.lz iso-scan/filename=$isofile noeject noprompt splash --
+    initrd (loop)/casper/initrd.lz
+  }
+  
+  submenu "Fedora..." {
+    set isoPath="/ISOs"
+    set linuxPath="$isoPath/Linux"
+
+    # https://docs.fedoraproject.org/en-US/Fedora/19/html/Installation_Guide/ap-admin-options.html
+
+    menuentry 'Fedora Workstation Live 64-bit 25 (1.3)' {
+      set isofile="$linuxPath/Fedora-Workstation-Live-x86_64-25-1.3.iso"
+      loopback loop "$isofile"
+      linux (loop)/isolinux/vmlinuz root=live:CDLABEL=Fedora-WS-Live-25-1-3 iso-scan/filename="$isofile" rd.live.image quiet
+      initrd (loop)/isolinux/initrd.img
+    }
+
+    menuentry 'Fedora Server 64-bit 25 (1.3) Doesn"t Work' {
+      set isofile="$linuxPath/Fedora-Server-dvd-x86_64-25-1.3.iso"
+      loopback loop "$isofile"
+      linux (loop)/isolinux/vmlinuz inst.stage2=hd:LABEL=Fedora-S-dvd-x86_64-25 iso-scan/filename="$isofile" quiet
+      initrd (loop)/isolinux/initrd.img
+    }
+
+    menuentry 'Fedora Workstation Live 64-bit 25 (1.3)' {
+      set isofile="$linuxPath/Fedora-Workstation-Live-x86_64-25-1.3.iso"
+      loopback loop "$isofile"
+      linux (loop)/isolinux/vmlinuz inst.stage2=live:CDLABEL=Fedora-WS-Live-25-1-3 iso-scan/filename="$isofile" rd.live.image quiet
+      initrd (loop)/isolinux/initrd.img
+    }
+  }
+  
+  submenu "(X/L)Ubuntu..." {
+    set isoPath="/ISOs"
+    set linuxPath="$isoPath/Linux"
+  
+    menuentry "Ubuntu 16.10 Minimal" {
+      set isofile="$linuxPath/ubuntu-16.10-mini"
+      loopback loop $isofile
+      # linux (loop)/casper/vmlinuz boot=casper iso-scan/filename=$isofile locale=en_US.UTF-8
+      # linux (loop)/casper/vmlinuz boot=casper iso-scan/filename=$isofile liveimg noprompt noeject quiet splash --
+      linux (loop)/linux boot=casper iso-scan/filename=$isofile locale=en_US.UTF-8
+      # initrd (loop)/casper/initrd.lz
+      initrd (loop)/initrd.gz
+    }
+    menuentry "ubuntu-15.04-desktop-amd64" {
+      set isofile="$linuxPath/ubuntu-15.04-desktop-amd64.iso"
+      loopback loop $isofile
+      linux (loop)/casper/vmlinuz.efi boot=casper iso-scan/filename=$isofile locale=en_US.UTF-8
+      initrd (loop)/casper/initrd.lz
+    }
+    menuentry "ubuntu-16.10-server-amd64" {
+      set isofile="$linuxPath/ubuntu-16.10-server-amd64.iso"
+      loopback loop $isofile
+      linux (loop)/install/vmlinuz boot=casper iso-scan/filename=$isofile locale=en_US.UTF-8
+      initrd (loop)/install/initrd.gz
+    }
+  
+    menuentry "Xbuntu 14.04 Beta - 64bit" {
+      set isofile="$linuxPath/xubuntu-15.04-desktop-amd64.iso"
+      loopback loop $isofile
+      linux (loop)/casper/vmlinuz.efi boot=casper iso-scan/filename=$isofile noprompt noeject splash --
+      initrd (loop)/casper/initrd.lz
+    }
+  }
+  
+  ## Other desktop distros
+  
+#    submenu "Debian..." {
+#      menuentry "Debian 7.0 Wheezy AMD64 Installer (netinst, firmware)" {
+#        set isofile="$linuxPath/debian-7.0.0-amd64-firmware-netinst.iso"
+#        loopback loop $iso
+#        linux (loop)/install.amd/vmlinuz
+#        initrd (loop)/install.amd/initrd.gz
+#      }
+#      
+#      menuentry "Debian 7.0 Wheezy AMD64 Live system (GNOME, firmware/non-free)" {
+#        set isofile="$linuxPath/debian-live-7.0.0-amd64-gnome-desktop+nonfree.iso"
+#        loopback loop $iso
+#        linux (loop)/live/vmlinuz boot=live
+#        initrd (loop)/live/initrd.img
+#      }
+#    }
+
+  ## Minimal resource-focused distros
+
+  menuentry "CorePlus ISO" {
+    set isofile="$linuxPath/CorePlus-current.iso"
+    loopback loop $isofile
+    #linux (loop)/boot/bzImage --
+    linux (loop)/boot/vmlinuz --
+    # Add ' loglevel=3 cde showapps desktop=flwm_topside' ?
+    #initrd (loop)/boot/tinycore.gz
+    initrd (loop)/boot/core.gz
+  }
+#    menuentry "CorePlus (Variant 2)" {
+#      set isofile="$linuxPath/COREPLUS"
+#      loopback loop $isofile
+#      linux (loop)/boot/vmlinuz
+#      initrd (loop)/boot/core.gz
+#    }
+# Will leave commented out and unused; Using CorePlus instead.
+#    menuentry "Tinycore" {
+#      set isofile="$linuxPath/TINYCORE"
+#      loopback loop $isofile
+#      linux (loop)/boot/vmlinuz
+#      #linux (loop)/boot/vmlinuz quiet cde iso=/mnt/sd[x]X$isofile
+#      #initrd (loop)/boot/tinycore.gz
+#      initrd (loop)/boot/core.gz
+#    }
+  
+  # Source: https://wiki.archlinux.org/index.php/Multiboot_USB_drive#Arch_Linux_monthly_release
+  # Installing from USB: "You must specify the filesystem type for loop0"
+  # - https://bbs.archlinux.org/viewtopic.php?id=212871
+  # ~ https://bbs.archlinux.org/viewtopic.php?id=226410
+  # https://askubuntu.com/questions/143718/mount-you-must-specify-the-filesystem-type#comment172573_143723
+  
+  # https://bbs.archlinux.org/viewtopic.php?pid=1620387#p1620387
+  menuentry 'Arch Linux x64 2017-06-01' {
+    set isofile="$linuxPath/archlinux-2017.06.01-x86_64.iso"
+    loopback loop "$isofile"
+    
+    # Leftover, unused kernel boot options that may be helpful later on.
+    # video=efifb fbdev noefi single
+    # archisolabel=ARCH_201508
+    # archisobasedir=arch
+    # archisodevice=/dev/loop0
+    
+    linux (loop)/arch/boot/x86_64/vmlinuz img_dev=/dev/sda1 img_loop=$isofile earlymodules=loop
+    initrd (loop)/arch/boot/x86_64/archiso.img
+  }
+  
+  menuentry "CentOS 6 x86_64 minimal" {
+    set isofile="$linuxPath/CentOS-7-x86_64-Minimal-1503-01.iso"
+    loopback loop $isofile
+    linux (loop)/isolinux/vmlinuz noeject inst.stage2=hd:LABEL=UNJEB:/$isofile
+    initrd (loop)/isolinux/initrd.img
+  }
+  menuentry "CentOS 6 x86_64 minimal with basic video driver" {
+    set isofile="$linuxPath/CentOS-7-x86_64-Minimal-1503-01.iso"
+    loopback loop $iso
+    linux (loop)/isolinux/vmlinuz noeject inst.stage2=hd:LABEL=UNJEB:/$isofile xdriver=vesa nomodset askmethod
+    initrd (loop)/isolinux/initrd.img
+  }
+  
+  menuentry "Damn Small Linux" {
+    echo "Doesn't work yet"'!';
+    # Maybe try this instead later: https://gist.github.com/oxplot/2041319
+    #  set isofile="$linuxPath/..."
+    linux16 /boot/bootdistro/damnsmall/isolinux/linux24 knoppix_dir=damnsmall ramdisk_size=100000 lang=en apm=power-off nomce noapic quiet BOOT_IMAGE=knoppix
+    initrd16 /boot/bootdistro/damnsmall/isolinux/minirt24.gz
+  }
+
+  ## Administrative- / Recovery- focused distros
+  
+  # menuentry "Knoppix" {
+  #   set isofile="$linuxPath/knoppix.iso"
+  # }
+  
+  menuentry "Boot Finnix 109 (64-bit)" {
+    set isofile="$linuxPath/finnix-111.iso"
+    loopback loop $isofile
+    linux (loop)/boot/x86/linux64 findiso=$isofile vga=791 nomodeset quiet --
+    initrd (loop)/boot/x86/initrd.xz
+  }
+  menuentry "Boot Finnix 109 (64-bit, text mode)" {
+    set isofile="$linuxPath/finnix-111.iso"
+    loopback loop $isofile
+    linux /boot/x86/linux64 findiso=$isofile vga=normal nomodeset quiet --
+    initrd /boot/x86/initrd.xz
+  }
+
+  menuentry "GRML - the sysadmins best friend" {
+    set isofile="$linuxPath/grml96-full_2014.11.iso"
+    loopback loop "$isofile"
+    set root=(loop)
+    configfile /boot/grub/loopback.cfg
+  }
+  
+  # https://github.com/grml/grml-live/blob/3ac646b41e6ce3aa58ff914bf2ba5d52d157d125/templates/boot/grub/%25SHORT_NAME%25_default.cfg
+  menuentry "grml64-full - copy Grml to RAM" {
+    set isofile="$linuxPath/grml96-full_2014.11.iso"
+    loopback loop "$isofile"
+    set root=(loop)
+    set gfxpayload=keep
+    echo 'Loading kernel...'
+    linux  (loop)/boot/grml64full/vmlinuz apm=power-off boot=live   nomce net.ifnames=0  "${loopback}" "${kernelopts}" toram=grml64-full.squashfs live-media-path="(loop)/live/grml64-full/" bootid=0fdfb62c-40af-40b9-9387-014232eb1f74  
+    echo 'Loading initrd...'
+    initrd (loop)/boot/grml64full/initrd.img
+  }
+
+  ## Pentesting distros
+
+  menuentry "kali-linux-1.1.0a-amd64" {
+    set isofile="$linuxPath/kali-linux-1.1.0a-amd64.iso"
+    loopback loop $isofile
+    linux (loop)/live/vmlinuz boot=live findiso=$isofile noconfig=sudo username=root hostname=kali
+    initrd (loop)/live/initrd.img
+  }
+# Will leave commented out and unusued, but still referenced; Using Kali instead.
+#    menuentry "BackTrack 5" {
+#      loopback loop /BT5-GNOME-64.iso
+#      linux (loop)/casper/vmlinuz boot=casper iso-scan/filename=/BT5-GNOME-64.iso noeject noprompt splash --
+#      initrd (loop)/casper/initrd.lz
+#    }
+
+  ## Anonymous distros
+
+  menuentry "TAILS - The Amnesic Incognito Live System" {
+    set isofile="$linuxPath/tails-i386-0.17.2.iso"
+    loopback loop $isofile
+    linux (loop)/live/vmlinuz boot=live config live-media=removable nopersistent noprompt quiet timezone=America/New_York block.events_dfl_poll_msecs=1000 splash nox11autologin module=Tails findiso=$isofile quiet_
+    initrd (loop)/live/initrd.img
+  }
+}
+
+submenu "Utils..." {
+
+  set isoPath="/ISOs";
+  set toolPath="$isoPath/Tools";
+  set memdiskPath="/boot/memdisk";
+
+
+  set oldMemtestPath="$toolPath/Memtest86-4.3.7.iso"; # I keep this around for some reason.  Something about a major version difference.  Compatibility maybe? MBR?
+  set memtestPath="$toolPath/Memtest86-7.3.iso";
+  menuentry "Memtest 86+" {
+    set isofile="$memtestPath"
+    loopback loop "$isofile"
+    linux16 (loop)/isolinux/memtest iso-scan/filename="$isofile"
+  }
+
+  submenu "SpinRite..." {
+    set isoPath="/ISOs";
+    set toolPath="$isoPath/Tools";
+    set memdiskPath="/boot/memdisk";
+  
+    menuentry "SpinRite 6.0 (raw)" {
+      set isofile="$toolPath/SpinRite 6.0/SpinRite.img"
+      set gfxpayload=text
+      linux16 "$memdiskPath" raw
+      initrd16 "$isofile"
+    }
+    # Source: http://codeverge.com/grc.techtalk.linux/grub-booting-spinrite-image-got-it-working/1617093
+    menuentry "SpinRite 6.0 (bigraw)" {
+      set isofile="$toolPath/SpinRite 6.0/SpinRite.img"
+      set gfxpayload=text
+      linux16  "$memdiskPath" bigraw
+      initrd16 "$isofile"
+    }
+  }
+  
+  # If I want direct access to TestDisk/PhotoRec, maybe look into bundling FreeDOS to run them: http://www.cgsecurity.org/wiki/Create_a_TestDisk_FreeDos_LiveCD
+   
+  # Source: https://help.ubuntu.com/community/Grub2/ISOBoot/Examples#Gparted
+  menuentry 'GParted 64-bit ISO' {
+    #set gfxpayload=text # ~= vga='normal'
+    # isofile_abspath is relative to LiveUSB root.
+    set isofile_abspath="$toolPath/gparted-live-0.28.1-1-amd64.iso"
+    # isofile_devpath is relative to (and begins with) '/dev'
+    set isofile_devpath="${devroot}${isofile_abspath}"
+    # "mount" the ISO
+    loopback loop "(${root})${isofile_abspath}"
+    # Following (single!) line adapted from https://wiki.archlinux.org/index.php/Multiboot_USB_drive#GParted_Live
+    linux '(loop)/live/vmlinuz' boot='live' union='overlay' username='user' config components noswap noeject toram='filesystem.squashfs' ip='' nosplash findiso="${isofile_abspath}"
+    # start RAMdisk from device=loop
+    initrd '(loop)/live/initrd.img'
+  }
+  
+  #menuentry "Parted Magic" {
+  #  set isofile="$toolPath/pmagic.iso"
+  #  loopback loop $isofile
+  #  linux (loop)/pmagic/bzImage iso_filename=$isofile edd=off load_ramdisk=1 prompt_ramdisk=0 rw gfxpayload=800x600x16 loglevel=9 max_loop=256 vmalloc=384MiB keymap=dvorak
+  #  initrd (loop)/pmagic/initrd.img
+  #}
+  
+  menuentry "SystemRescueCd" {
+    set isofile="$toolPath/systemrescuecd-x86-4.5.3.iso"
+    loopback loop "$isofile"
+    # linux (loop)/isolinux/rescuecd isoloop"=$isofile" setkmap=us docache dostartx
+    # Or linux (loop)/isolinux/rescue32
+    # Or linux (loop)/isolinux/rescue64
+    linux (loop)/isolinux/rescue64 isoloop="$isofile" setkmap=us docache dostartx
+    initrd (loop)/isolinux/initram.igz
+  }
+  
+  menuentry "CloneZilla" {
+    set isofile="$toolPath/clonezilla-live-2.5.0-25-amd64.iso"
+    loopback loop "$isofile"
+    # linux (loop)/live/vmlinuz boot=live live-config union=aufs nolocales noprompt gfxpayload=800x600x16 ip=frommedia findiso="$isofile"
+    # initrd (loop)/live/initrd.img
+    
+    # linux (loop)/live/vmlinuz initrd=/live/initrd.img boot=live union=overlay username=user config components quiet noswap edd=on nomodeset locales= keyboard-layouts= ocs_live_run="ocs-live-general" ocs_live_extra_param="" ocs_live_batch="no" vga=788 ip= net.ifnames=0  nosplash i915.blacklist=yes radeonhd.blacklist=yes nouveau.blacklist=yes vmwgfx.enable_fbdev=1
+    
+    linux (loop)/live/vmlinuz
+    initrd /live/initrd.img boot=live union=overlay username=user config components quiet noswap edd=on nomodeset locales= keyboard-layouts= ocs_live_run="ocs-live-general" ocs_live_extra_param="" ocs_live_batch="no" vga=788 ip= net.ifnames=0  nosplash i915.blacklist=yes radeonhd.blacklist=yes nouveau.blacklist=yes vmwgfx.enable_fbdev=1
+  }
+  # Source: https://askubuntu.com/a/880484
+  menuentry "clonezilla" {
+    set isofile="$toolPath/clonezilla-live-2.5.0-25-amd64.iso"
+    loopback loop "$isofile"
+    linux (loop)/live/vmlinuz boot=live components config findiso=$isofile ip=frommedia toram=filesystem.squashfs union=overlay username=user
+    initrd (loop)/live/initrd.img
+  }
+  
+  #menuentry "Ophcrack No Tables" {
+  #  set isofile="$toolPath/ophcrack-notables.iso"
+  #  set gfxpayload=text
+  #  loopback loop $isofile
+  #  linux (loop)/boot/bzImage root=/dev/null rw lang=en_US kmap=dvorak autologin iso-scan/filename=$isofile
+  #  initrd (loop)/boot/rootfs.gz
+  #}
+  
+  #menuentry "Ophcrack Vista/7 Tables" {
+  #  set isofile="$toolPath/ophcrack-vistatables.iso"
+  #  set gfxpayload=text
+  #  loopback loop $isofile
+  #  linux (loop)/boot/bzImage root=/dev/null rw lang=en_US kmap=dvorak autologin iso-scan/filename=$isofile
+  #  initrd (loop)/boot/rootfs.gz
+  #}
+  
+  #menuentry "DBAN ISO" {
+  # set isofile="$toolPath/dban.iso"
+  # loopback loop $isofile
+  # linux (loop)/DBAN.BZI nuke="dwipe" iso-scan/filename=$isofile silent --
+  #}
+  
+  #menuentry "PC-Doctor" {
+  #  loopback loop /boot/iso/pcdd1780.iso
+  #  linux (loop)/[BOOT]/Bootable_2.88M.img
+  #}
+  
+  
+  #menuentry "Boot Hardware Detection Tool from iso using memdisk 4.05" {
+  #  linux16 $memdiskPath iso
+  #  initrd16 /customboot/hdt.iso
+  #}
+  #menuentry "Free Dos from iso using memdisk 4.05" {
+  #  set isofile="/OS/fdbasecd.iso"
+  #  linux16 $memdiskPath iso
+  #  initrd16 (hd0,6)$isofile
+  #}
+
+  # Source: dann.com.br...
+  menuentry "Hiren's boot CD using grub.exe" {
+    set dosGRUBPath="$grub4dosPath";
+    set hbcdPath="$toolPath/HBCD";
+    set menuLstPath="$hbcdPath/menu.lst";
+    set isofile="$toolPath/Hiren's.BootCD.15.2.iso"
+    linux16 "$dosGRUBPath" --config-file="find --set-root $menuLstPath; configfile $menuLstPath"
+  }
+  menuentry "Hiren's boot CD using memdisk 4.05" {
+    set isofile="$toolPath/Hiren's.BootCD.15.2.iso"
+    linux16 $memdiskPath iso
+    initrd16 (hd0,6)$isofile
+  }
+  menuentry "Ultimate Boot CD iso using memdisk 4.05" {
+    set isofile="$toolPath/UBCD4WinBuilder.iso"
+    linux16 $memdiskPath iso
+    initrd16 (hd0,6)$isofile
+  }
+  #menuentry "UBCD with MEMDISK" {
+  #  set isofile="$toolPath/ubcd502.iso"
+  #  linux16 $memdiskPath iso raw
+  #  initrd $isofile
+  #}
+  #menuentry "UBCD with grub4dos" {
+  #  set isofile="$toolPath/ubcd502.iso"
+  #  linux16 "$grub4dosPath" --config-file="map (rd) (hd32); map --hook; root (hd32); chainloader (hd32);"
+  #  initrd $isofile
+  #}
+}
+
+menuentry "Scan for OS on internal HDD (Untested)" {
+  insmod regexp
+  insmod ahci
+  insmod part_msdos
+  for x in (ahci0,*) ; do
+    if [ -f "$x/grub/grub.cfg" ] ; then
+      menuentry "Load Config from $x" $x { 
+        root=$2
+        configfile /grub/grub.cfg
+      }
+    fi
+    if [ -f "$x/boot/grub/grub.cfg" ] ; then
+      menuentry "Load Config from $x" $x {
+        root=$2
+        configfile /boot/grub/grub.cfg
+      }
+    fi
+  done
+}
+
+submenu "DOS/Windows (Doesn't work)..." {
+
+  set isoPath="/ISOs";
+  
+  #  menuentry "win7" {
+  #    loopback loop "$isoPath/win7.iso"
+  #    chainloader (loop)
+  #  }
+
+  menuentry "Run Windows 7 Ultimate 64-bit Installer (Doesn't work)" {
+    #insmod part_msdos
+    #insmod ntfs
+    set root='(hd0,msdos5)'
+    #search --no-floppy --fs-uuid --set=root 01D0DC21970FC910
+    #drivemap -s (hd0) ${root}
+    chainloader +1
+    boot
+  }
+
+  menuentry "Microsoft Windows x86_64 UEFI-GPT Setup (Doesn't work)" {
+    insmod usbms
+    insmod part_gpt
+    insmod part_msdos
+    insmod fat
+    insmod search_fs_uuid
+    insmod chain
+    search --fs-uuid --no-floppy --set=root 01D0DC21970FC910
+    #chainloader (${root})/efi/Microsoft/Boot/bootmgfw.efi
+    chainloader (${root})/efi/Microsoft/Boot/cdboot_noprompt.efi
+  }
+
+  menuentry "Windows 7 (loader) (on /dev/sda1) (Doesn't work)" {
+  insmod part_msdos
+  insmod ntfs
+  insmod ntldr
+  set root='hd0,msdos5'
+  ntldr /bootmgr
+}
+
+  submenu "Windows PE..." {
+  
+    menuentry "WinPE 1a" {
+      set root=(hd0,msdos5)
+      boot
+    }
+
+    menuentry "WinPE 1b" {
+      set root=(hd0,msdos5)
+      chainloader +1
+    }
+
+    menuentry "WinPE 2" {
+      rootnoverify (hd0,msdos5)
+      chainloader +1
+    }
+  }
+  
+  submenu "MS-DOS..." {
+    
+      set isoPath="/ISOs";
+      set dosWinPath="$isoPath/Dos-Win";
+    
+      menuentry "MS-DOS" {
+        set isofile="$dosWinPath/DOS6.22_bootdisk.iso"
+        set gfxpayload=text
+        linux16 "$memdiskPath" raw
+        initrd16 "$isofile"
+      }
+      menuentry "MS-DOS 2" {
+        set isofile="$dosWinPath/DOS6.22_bootdisk.iso"
+        linux16  "$memdiskPath" bigraw
+        initrd16 "$isofile"
+      }
+    }
+}
+
+menuentry "Grub4dos (Untested)"{
+ linux "$grub4dosPath"
+}
+
+menuentry 'System setup (Untested)' {
+  fwsetup
+}
+
+menuentry "System shutdown (Untested)" {
+  echo "System shutting down..."
+  halt
+}
+
+menuentry "System restart (Untested)" {
+  echo "System rebooting..."
+  reboot
+}
