@@ -53,10 +53,10 @@ FAT/FAT32
 # 直接使用Demo
 
 1. EFI文件夹为Demo文件夹，可以直接将其拷贝到ESP分区（第一个FAT/FAT32分区）根目录，即可启动EFI版grub2，/EFI/grub/x64.cfg为其配置文件，内部包含启动efi，启动windows，启动linux以及安装Ubuntu范例，可自行修改菜单
-
-
-  [1]: ./images/1515334578820.jpg
   
 ## Demo 待完善的功能
 1.  支持windows
 2. 支持super_grub2_disk_hybrid_2.02s9.iso  (可以自动搜寻磁盘里的系统  然后引导 并且可以使用iso启动)
+
+
+  [1]: ./images/1515334578820.jpg
