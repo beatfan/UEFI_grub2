@@ -40,3 +40,7 @@ grub-mkimage.exe -d x86_64-efi -c x86_64-efi.cfg -p /EFI/grub -o z_bootx64.efi -
 
 
   [1]: ./images/1515334578820.jpg
+  
+## Demo 待完善的功能
+1.  支持windows
+2. 支持super_grub2_disk_hybrid_2.02s9.iso  (可以自动搜寻磁盘里的系统  然后引导 并且可以使用iso启动)
