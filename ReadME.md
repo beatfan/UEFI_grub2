@@ -17,4 +17,4 @@
 1. EFI文件夹为Demo文件夹，可以直接将其拷贝到ESP分区（第一个FAT/FAT32分区）根目录，即可启动EFI版grub2，/EFI/grub/x64.cfg为其配置文件，内部包含启动efi，启动windows，启动linux以及安装Ubuntu范例，可自行修改菜单
 
 
-  [1]: ./images/1515334500263.jpg
+  [1]: ./images/1515334578820.jpg
