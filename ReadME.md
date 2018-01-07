@@ -6,7 +6,7 @@
 
 1. grub-2.02-for-windows/make-your-own-EFI.bat 为自制efi版grub2的脚本，其配置文件为x86_64-efi.cfg (会根据这个配置文件来生成efi文件,这个配置文件定义了生成的efi文件将要到哪个目录去搜寻grub的配置文件)
 
-文件示例:
+x86_64-efi.cfg文件示例:
 
 ```
 search.file /EFI/grub/x64.cfg root  
