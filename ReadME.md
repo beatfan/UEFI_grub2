@@ -21,7 +21,7 @@ grub-mkimage.exe -d x86_64-efi -c x86_64-efi.cfg -p /EFI/grub -o z_bootx64.efi -
 -O 表示集成的模块
 
 
-3. 复制locale和x86_64-efi (模块目录)以及unicode.pf2(字体) background.jpg (背景图片)到/EFI/boot/
+3. 复制locale (地区语言) 和x86_64-efi (模块目录)以及unicode.pf2(字体) background.jpg (背景图片)到/EFI/boot/
 
 # 直接使用Demo
 
