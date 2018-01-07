@@ -11,7 +11,15 @@
 2. 运行make-your-own-EFI.bat即可生成z_bootx64.efi，将其改名为bootx64.efi，放到esp分区/EFI/boot/bootx64.efi，
 
 生成命令：
+```
 grub-mkimage.exe -d x86_64-efi -c x86_64-efi.cfg -p /EFI/grub -o z_bootx64.efi -O x86_64-efi part_gpt part_msdos disk fat exfat ext2 ntfs xfs appleldr hfs iso9660 normal search_fs_file configfile linux linux16 chain loopback echo efi_gop efi_uga video_bochs video_cirrus file gfxmenu gfxterm gfxterm_background gfxterm_menu halt reboot help jpeg ls png true 
+```
+-d 表示指定查找模块目录
+-c 表示指定配置文件，这个配置文件会集成到efi文件内，就是我们刚刚编写的x86_64-efi.cfg
+-p 设置偏好文件夹，cfg文件中会调
+-o 表示生成的目标文件
+-O 表示集成的模块
+
 
 3. 复制locale和x86_64-efi文件夹以及unicode.pf2(字体) background.jpg (背景图片)到/EFI/boot/
 
