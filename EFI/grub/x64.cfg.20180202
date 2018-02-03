@@ -100,21 +100,6 @@ menuentry "Init EFI clover to install macos" --class macos --class os{
 #   initrd  /install/initrd.gz
 # }
 
-menuentry 'Kubuntu on this flash memory disk ' --class ubuntu --class gnu-linux --class gnu --class os $menuentry_id_option 'gnulinux-simple-6b2f6599-4aca-45d3-a5bc-4d3b3047c6b9' {
-  insmod gzio
-  set root='hd0,gpt5'
-  linux /boot/vmlinuz-4.13.0-32-generic.efi.signed root=UUID=6b2f6599-4aca-45d3-a5bc-4d3b3047c6b9 ro  quiet splash $vt_handoff
-  initrd  /boot/initrd.img-4.13.0-32-generic
-}
-  submenu 'Advanced options for Kubuntu' $menuentry_id_option 'gnulinux-advanced-6b2f6599-4aca-45d3-a5bc-4d3b3047c6b9' {
-    menuentry 'Ubuntu, with Linux 4.13.0-32-generic' --class ubuntu --class gnu-linux --class gnu --class os $menuentry_id_option 'gnulinux-4.13.0-32-generic-advanced-6b2f6599-4aca-45d3-a5bc-4d3b3047c6b9' {
-      set root='hd0,gpt5'
-      echo  'Loading Linux 4.13.0-32-generic ...'
-      linux /boot/vmlinuz-4.13.0-32-generic.efi.signed root=UUID=6b2f6599-4aca-45d3-a5bc-4d3b3047c6b9 ro  quiet splash $vt_handoff
-      echo  'Loading initial ramdisk ...'
-      initrd  /boot/initrd.img-4.13.0-32-generic
-  }
-  }
 
 ## ISO ##
 
@@ -204,18 +189,13 @@ menuentry "install CentOS-6.7-x86_64-bin-DVD1.iso" --class centos --class os {
 ###################################  Tools   ####################################
 
 ## PE ##
-
-menuentry "super_grub2_disk_hybrid_2.02s9 form disk (grub)" --class tools --class tools {
+menuentry "super_grub2_disk_hybrid_2.02s9 form disk" --class tools --class tools {
   set root=(hd0,gpt3)
-  set isofile="/iso/tools/super_grub2_disk_hybrid_2.02s9.iso"
-  loopback loop $isofile
-  configfile (loop)/boot/grub/grub.cfg
+#请先注释掉/ISO/tools/super_grub2_disk_2.02s9/boot/grub/grub.cfg中的set sg2d_directory
+  set sg2d_directory="/iso/tools/super_grub2_disk_2.02s9/boot/grub/boot/grub"
+  export sg2d_directory
+  configfile /iso/tools/super_grub2_disk_2.02s9/boot/grub/grub.cfg
 }
-menuentry "super_grub2_disk_hybrid_2.02s9 form disk (UEFI)" --class tools --class tools{
-    set root='(hd0,gpt3)'
-    chainloader /iso/tools/super_grub2_disk_standalone_x86_64_efi_2.02s10-beta5.EFI
-}
-
 
 menuentry "kali-linux-1.1.0a-amd64" --class others --class others{
   set isofile="$linuxPath/kali-linux-1.1.0a-amd64.iso"
@@ -224,7 +204,7 @@ menuentry "kali-linux-1.1.0a-amd64" --class others --class others{
   initrd (loop)/live/initrd.img
 }
 
-## Disk Tools##
+## Disk ##
 menuentry "install clonezilla-live-20170905-zesty-amd64.iso" --class tools --class tools {
   set root=(hd0,gpt3)
   set isofile=/iso/tools/clonezilla-live-20170905-zesty-amd64.iso
@@ -247,6 +227,10 @@ loopback loop (hd0,3)$isofile
 linux (loop)/live/vmlinuz boot=live config union=aufs noswap noprompt ip=frommedia toram=filesystem.squashfs findiso=${isofile}
 initrd (loop)/live/initrd.img
 }
+
+
+
+
 
 ###################################### End Memu ###########################################################
 
