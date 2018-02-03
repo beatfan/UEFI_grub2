@@ -61,7 +61,7 @@ FAT/FAT32
 1. EFI文件夹为Demo文件夹，可以直接将其拷贝到ESP分区（第一个FAT/FAT32分区）根目录，即可启动EFI版grub2，/EFI/grub/x64.cfg为其配置文件
 2. /EFI/grub/x64.cfg 文件定义了以下几种启动方式(有的可能工作不正常,有的没有测试):
 	- 引导启动本地windows
-	- 引导进入clover四叶草,进而引导macos
+	- 引导进入clover四叶草,进而引导macos(clover的引导文件/EFI/CLOVER/)
 	- 引导U盘中的kubuntu系统(已经安装好的kubuntu非Live ISO)
 	- 引导ISO文件(ISO文件需要是Live ISO)[你可以将系统ISO或者一些工具如:kali-linux  clonezilla gparted直接通过此方式引导]
 	- 引导进入super grub2工具 (这个工具可以自动搜寻磁盘里的系统  然后引导 并且可以使用iso启动)[EFI方式引导]
