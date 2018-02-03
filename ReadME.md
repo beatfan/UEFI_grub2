@@ -1,6 +1,6 @@
 # 说明
   通过此repo你可以来制作万能得U盘启动盘
-  步骤主要分为两部分:
+  步骤主要为:
   
   	1. 使用grub-2.02-for-windows目录下的make-your-own-EFI.bat来制作你自己的efi文件
   	2. 编写第一步骤中你自己的efi中定义的x64.cfg文件
