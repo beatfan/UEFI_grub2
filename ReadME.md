@@ -1,9 +1,9 @@
 # 说明
   通过此repo你可以来制作万能得U盘启动盘
   步骤主要分为两部分:
-  	1.使用grub-2.02-for-windows目录下的make-your-own-EFI.bat来制作你自己的efi文件
-  	2.编写第一步骤中你自己的efi中定义的x64.cfg文件
-  	3.在U盘上格式化第一个分区为UEFI分区,而后将所有文件放入到此分区中
+  	1. 使用grub-2.02-for-windows目录下的make-your-own-EFI.bat来制作你自己的efi文件
+  	2. 编写第一步骤中你自己的efi中定义的x64.cfg文件
+  	3. 在U盘上格式化第一个分区为UEFI分区,而后将所有文件放入到此分区中
 
 # 生成EFI 的 grub启动项
 
@@ -67,12 +67,13 @@ FAT/FAT32
 	- 引导进入super grub2工具 (这个工具可以自动搜寻磁盘里的系统  然后引导 并且可以使用iso启动)[EFI方式引导]
 3. demo所定义的配置对应的U盘分区结构
 
-  
+  
 ## Demo 待完善的功能
 1. 支持windows本地盘启动
 2. 支持windows PE
 3. 支持直接引导U盘上的某个分区上的windows安装文件,进而直接安装Windows
 4. 支持super grub2 的grub 引导方式
-
+![002][2]
 
   [1]: ./images/1515334578820.jpg
+  [2]: ./images/1515334578821.jpg
