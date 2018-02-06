@@ -1,0 +1,246 @@
+function load_video {
+  if [ x$feature_all_video_module = xy ]; then
+    insmod all_video
+  else
+    insmod efi_gop
+    insmod efi_uga
+    insmod ieee1275_fb
+    insmod vbe
+    insmod vga
+    insmod video_bochs
+    insmod video_cirrus
+  fi
+}
+
+
+insmod part_gpt
+insmod fat
+insmod loopback
+insmod ntfs
+insmod ext2
+
+
+set root='hd0,gpt1'
+
+#set font
+font="/EFI/grub/unicode.pf2"
+if loadfont $font ; then
+  set gfxmode=auto
+  load_video
+  insmod gfxterm
+  set locale_dir=$prefix/locale
+  set lang=zh_CN
+  insmod gettext
+fi
+
+#adjust the screen resolution
+terminal_output gfxterm
+
+#background
+insmod jpeg
+if background_image /EFI/grub/background.jpg; then
+  true
+else
+  set menu_color_normal=white/black
+  set menu_color_highlight=black/light-gray
+  if background_color 255,255,155,0; then
+    clear
+  fi
+fi
+
+
+
+#default select menu index
+set default=0
+
+#timeout
+set timeout_style=menu
+set timeout=5
+
+
+#################
+## 菜单 ##
+#################
+
+#################################### Local Disk #################################
+#Null
+
+####################################  Windows  ##################################
+# menuentry "install cn_windows_10_multi-edition_version_1709_updated_sept_2017_x64_dvd_100090804.iso from fisk (bootmgr)" --class windows --class os {
+# 	insmod ntfs
+# 	set root='(hd0,gpt2)'
+#
+# 	clear
+# 	echo "Start Windows"
+# 	chainloader /bootmgr
+# }
+#
+menuentry "install cn_windows_10_multi-edition_version_1709_updated_sept_2017_x64_dvd_100090804.iso from fisk" --class windows --class os {
+	set root='(hd0,gpt4)'
+	clear
+	echo "Start install Windows10"
+	chainloader /bootmgr.efi
+}
+
+###################################  Mac OS ####################################
+menuentry "Init EFI clover to install macos" --class macos --class os{
+    set root='(hd0,gpt1)'
+    chainloader /efi/clover/cloverx64.efi
+}
+
+
+####################################  Ubuntu  ##################################
+
+## Disk ##
+
+# menuentry "install ubuntu server 16.04 from disk" --class ubuntu --class os {
+#   set gfxpayload=keep
+#   set root='(hd0,gpt4)'
+#   linux /install/vmlinuz  file=/cdrom/preseed/ubuntu-server.seed quiet ---
+#   initrd  /install/initrd.gz
+# }
+
+
+## ISO ##
+
+menuentry "install ubuntu-16.04.3-desktop-amd64.iso" --class ubuntu --class os {
+	set root=(hd0,gpt3)
+	set isofile=/iso/ubuntu/ubuntu-16.04.3-desktop-amd64.iso
+	loopback loop $isofile
+    linux (loop)/casper/vmlinuz.efi file=/cdrom/preseed/ubuntu.seed boot=casper iso-scan/filename=$isofile quiet splash ---
+    initrd (loop)/casper/initrd.lz
+}
+
+menuentry "install ubuntu-16.04.3-server-amd64.iso" --class ubuntu --class os {
+  set gfxpayload=keep
+  set root='(hd0,gpt3)'
+  set isofile=/iso/ubuntu/ubuntu-16.04.3-server-amd64.iso
+  linux (loop)/install/vmlinuz  file=/cdrom/preseed/ubuntu.seed boot=casper iso-scan/filename=$isofile quiet splash ---
+  initrd (loop)/install/initrd.gz
+}
+
+menuentry "install ubuntu-17.10-desktop-amd64.iso" --class ubuntu --class os {
+  set root=(hd0,gpt3)
+  set isofile=/iso/ubuntu/ubuntu-17.10-desktop-amd64.iso
+  loopback loop $isofile
+    linux (loop)/casper/vmlinuz.efi file=/cdrom/preseed/ubuntu.seed boot=casper iso-scan/filename=$isofile quiet splash ---
+    initrd (loop)/casper/initrd.lz
+}
+
+menuentry "install ubuntu-17.10-server-amd64.iso" --class ubuntu --class os {
+  set gfxpayload=keep
+  set root='(hd0,gpt3)'
+  set isofile=/iso/ubuntu/ubuntu-17.10-server-amd64.iso
+  linux (loop)/install/vmlinuz  file=/cdrom/preseed/ubuntu.seed boot=casper iso-scan/filename=$isofile quiet splash ---
+  initrd (loop)/install/initrd.gz
+}
+
+menuentry "install kubuntu-16.04.3-desktop-amd64.iso" --class ubuntu --class os {
+  set root=(hd0,gpt3)
+  set isofile=/iso/ubuntu/kubuntu-16.04.3-desktop-amd64.iso
+  loopback loop $isofile
+    linux (loop)/casper/vmlinuz.efi file=/cdrom/preseed/ubuntu.seed boot=casper iso-scan/filename=$isofile quiet splash ---
+    initrd (loop)/casper/initrd.lz
+}
+
+menuentry "install kubuntu-17.10-desktop-amd64.iso" --class ubuntu --class os {
+  set root=(hd0,gpt3)
+  set isofile=/iso/ubuntu/kubuntu-17.10-desktop-amd64.iso
+  loopback loop $isofile
+    linux (loop)/casper/vmlinuz.efi file=/cdrom/preseed/ubuntu.seed boot=casper iso-scan/filename=$isofile quiet splash ---
+    initrd (loop)/casper/initrd.lz
+}
+
+###################################  Centos  ####################################
+
+menuentry "install CentOS-7-x86_64-Minimal-1708.iso" --class centos --class os {
+  set root=(hd0,gpt3)
+  set isofile=/iso/centos/CentOS-7-x86_64-Minimal-1708.iso
+  loopback loop $isofile
+    linux (loop)/isolinux/vmlinuz file=/cdrom/preseed/centos.seed boot=isolinux iso-scan/filename=$isofile quiet splash ---
+    initrd (loop)/isolinux/initrd.img
+}
+
+menuentry "install CentOS-7-x86_64-Everything-1511.iso" --class centos --class os {
+  set root=(hd0,gpt3)
+  set isofile=/iso/centos/CentOS-7-x86_64-Everything-1511.iso
+  loopback loop $isofile
+    linux (loop)/isolinux/vmlinuz file=/cdrom/preseed/centos.seed boot=isolinux iso-scan/filename=$isofile quiet splash ---
+    initrd (loop)/isolinux/initrd.img
+}
+
+menuentry "install CentOS-6.7-x86_64-bin-DVD1.iso" --class centos --class os {
+  set root=(hd0,gpt3)
+  set isofile=/iso/centos/CentOS-6.7-x86_64-bin-DVD1.iso
+  loopback loop $isofile
+    linux (loop)/isolinux/vmlinuz file=/cdrom/preseed/centos.seed boot=isolinux iso-scan/filename=$isofile quiet splash ---
+    initrd (loop)/isolinux/initrd.img
+}
+
+
+###################################  Others  ####################################
+# menuentry "kali-linux-1.1.0a-amd64" --class others --class others{
+#   set isofile="$linuxPath/kali-linux-1.1.0a-amd64.iso"
+#   loopback loop $isofile
+#   linux (loop)/live/vmlinuz boot=live findiso=$isofile noconfig=sudo username=root hostname=kali
+#   initrd (loop)/live/initrd.img
+# }
+
+###################################  Tools   ####################################
+
+## PE ##
+menuentry "super_grub2_disk_hybrid_2.02s9 form disk" --class tools --class tools {
+  set root=(hd0,gpt3)
+#请先注释掉/ISO/tools/super_grub2_disk_2.02s9/boot/grub/grub.cfg中的set sg2d_directory
+  set sg2d_directory="/iso/tools/super_grub2_disk_2.02s9/boot/grub/boot/grub"
+  export sg2d_directory
+  configfile /iso/tools/super_grub2_disk_2.02s9/boot/grub/grub.cfg
+}
+
+menuentry "kali-linux-1.1.0a-amd64" --class others --class others{
+  set isofile="$linuxPath/kali-linux-1.1.0a-amd64.iso"
+  loopback loop $isofile
+  linux (loop)/live/vmlinuz boot=live findiso=$isofile noconfig=sudo username=root hostname=kali
+  initrd (loop)/live/initrd.img
+}
+
+## Disk ##
+menuentry "install clonezilla-live-20170905-zesty-amd64.iso" --class tools --class tools {
+  set root=(hd0,gpt3)
+  set isofile=/iso/tools/clonezilla-live-20170905-zesty-amd64.iso
+  loopback loop $isofile
+linux (loop)/live/vmlinuz boot=live union=overlay username=user config components quiet noswap nolocales edd=on nomodeset nodmraid ocs_live_run=\"ocs-live-general\" ocs_live_extra_param=\"\" keyboard-layouts=\"\" ocs_live_batch=\"no\" locales=\"\" vga=788 ip=frommedia nosplash toram=filesystem.squashfs findiso=$isofile
+initrd (loop)/live/initrd.img
+}
+
+# menuentry "Clonezilla-live-20170905-zesty-amd64.iso" --class tools --class tools {
+#   set root=(hd0,gpt3)
+#   set isofile=/iso/tools/clonezilla-live-20170905-zesty-amd64.iso
+#   loopback loop $isofile
+# linux (loop)/live/vmlinuz boot=live components config findiso=$isofile ip=frommedia toram=filesystem.squashfs union=overlay username=user
+# initrd (loop)/live/initrd.img
+# }
+
+menuentry "gparted-live-0.30.0-1-amd64.iso" {
+set isofile="/iso/tools/gparted-live-0.30.0-1-amd64.iso"
+loopback loop (hd0,3)$isofile
+linux (loop)/live/vmlinuz boot=live config union=aufs noswap noprompt ip=frommedia toram=filesystem.squashfs findiso=${isofile}
+initrd (loop)/live/initrd.img
+}
+
+
+
+
+
+###################################### End Memu ###########################################################
+
+menuentry "reboot" {
+	insmod reboot
+	reboot
+}
+
+menuentry "halt" {
+	insmod halt
+	halt
+}
+

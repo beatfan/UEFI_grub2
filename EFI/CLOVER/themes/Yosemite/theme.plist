@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Author</key>
+	<string>CosmosCJ/宇宙</string>
+	<key>Description</key>
+	<string>Yosemite v1.1</string>
+	<key>Theme</key>
+	<dict>
+		<key>Background</key>
+		<dict>
+			<key>Path</key>
+			<string>starsky.png</string>
+			<key>Sharp</key>
+			<string>0x80</string>
+			<key>Type</key>
+			<string>Scale</string>
+		</dict>
+		<key>Badges</key>
+		<dict>
+			<key>Inline</key>
+			<false/>
+			<key>Show</key>
+			<false/>
+			<key>Swap</key>
+			<true/>
+		</dict>
+		<key>Banner</key>
+		<string>apple logo.png</string>
+		<key>Components</key>
+		<dict>
+			<key>Banner</key>
+			<true/>
+			<key>Functions</key>
+			<true/>
+			<key>Label</key>
+			<true/>
+			<key>MenuTitle</key>
+			<true/>
+			<key>MenuTitleImage</key>
+			<true/>
+			<key>Revision</key>
+			<false/>
+			<key>Tools</key>
+			<true/>
+		</dict>
+		<key>Font</key>
+		<dict>
+			<key>CharWidth</key>
+			<integer>10</integer>
+			<key>Path</key>
+			<string>WoB_PTMono_10W_grey.png</string>
+			<key>Type</key>
+			<string>Load</string>
+		</dict>
+		<key>Layout</key>
+		<dict>
+			<key>BannerOffset</key>
+			<integer>60</integer>
+			<key>TextOffset</key>
+			<integer>60</integer>
+		</dict>
+		<key>Selection</key>
+		<dict>
+			<key>Big</key>
+			<string>Selection_big.png</string>
+			<key>Color</key>
+			<string>0x00000065</string>
+			<key>Small</key>
+			<string>Selection_small.png</string>
+		</dict>
+	</dict>
+	<key>Year</key>
+	<string>2014</string>
+</dict>
+</plist>
