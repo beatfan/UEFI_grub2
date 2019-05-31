@@ -1,12 +1,9 @@
 # 说明
-  通过此repo你可以来制作万能得U盘启动盘
-  步骤主要为:
+  此项目仅用于生成UEFI版本的Grub2的efi文件，若是想要制作同时支持 BIOS和UEFI启动的U盘启动盘，请参考项目：[USB_Boot_With_Grub_Grub2_ISOLINUX](https://github.com/beatfan/USB_Boot_With_Grub_Grub2_ISOLINUX.git)
   
-  	1. 使用grub-2.02-for-windows目录下的make-your-own-EFI.bat来制作你自己的efi文件
-  	2. 编写第一步骤中你自己的efi中定义的x64.cfg文件
-  	3. 在U盘上格式化第一个分区为UEFI分区,而后将所有文件放入到此分区中
+  
 
-# 生成EFI 的 grub启动项
+# 生成EFI 的 grub2启动项
 
   UEFI启动是fat/fat32分区/EFI/Boot/bootia32.efi或者/EFI/Boot/bootx64.efi，然后进程由UEFI交给efi程序，我们就是制作这个efi程序，使用grub-mkimage命令即可生成。
  efi程序中需要内置配置文件，类似grub的grldr文件，一旦生成后就很难修改了，所以，我们需要一个类似与menu.lst的配置文件，所以我们指定的配置文件中指向外部的cfg配置文件
@@ -57,6 +54,17 @@ FAT/FAT32
 
 #####################
 
+
+#其它说明：
+通过此repo你可以来制作UEFI版本启动U盘
+
+  步骤主要为:
+  
+  	1. 使用grub-2.02-for-windows目录下的make-your-own-EFI.bat来制作你自己的efi文件
+  	2. 编写第一步骤中你自己的efi中定义的x64.cfg文件
+  	3. 在U盘上格式化第一个分区为FAT/FAT32分区,而后将所有文件放入到此分区中
+	
+	
 # 直接使用Demo
 
 1. EFI文件夹为Demo文件夹，可以直接将其拷贝到ESP分区（第一个FAT/FAT32分区）根目录，即可启动EFI版grub2，/EFI/grub/x64.cfg为其配置文件
@@ -69,7 +77,7 @@ FAT/FAT32
 3. demo所定义的配置对应的U盘分区结构
 ![002][2]
   
-## Demo 待完善的功能
+## Demo 待完善的功能（此功能请参考项目：[USB_Boot_With_Grub_Grub2_ISOLINUX](https://github.com/beatfan/USB_Boot_With_Grub_Grub2_ISOLINUX.git))
 1. 支持windows本地盘启动
 2. 支持windows PE
 3. 支持直接引导U盘上的某个分区上的windows安装文件,进而直接安装Windows
